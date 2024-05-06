@@ -25,11 +25,8 @@ public class Main {
             sum_b += x[i + 1] * y[i];
         }
 
-        String area = String.format("%.1f", (Math.abs(sum_a - sum_b) / 2.0));
-        bw.write(area);
+        System.out.printf("%.1f", Math.abs(sum_a - sum_b) / 2.0);
 
         br.close();
-        bw.flush();
-        bw.close();
     }
 }
