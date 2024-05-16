@@ -19,21 +19,19 @@ public class Main {
         }
 
         Queue<Integer> queue = new LinkedList<>();
-        while (Arrays.stream(startNode).sum() != -1 * N) {
-            for (int i = 1; i <= N; i++) {
-                if(startNode[i] == 0) {
-                    queue.add(i);
-                    startNode[i]--;
-                    stringBuilder.append(i).append(" ");
-                }
+        for (int i = 1; i <= N; i++) {
+            if(startNode[i] == 0) {
+                queue.add(i);
+            }
+        }
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+            stringBuilder.append(node).append(" ");
+            for(int n : graph.get(node)) {
+                startNode[n] --;
+                if(startNode[n] == 0) queue.add(n);
             }
 
-            while (!queue.isEmpty()) {
-                int node = queue.poll();
-                for(int n : graph.get(node)) {
-                    if(startNode[n] != 0) startNode[n] --;
-                }
-            }
         }
 
         System.out.println(stringBuilder);
