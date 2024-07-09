@@ -1,0 +1,1 @@
+n = int(input()); print(1 if (n % 4 is 0) and (n % 400 is 0) is (n % 100 is 0) else 0)
