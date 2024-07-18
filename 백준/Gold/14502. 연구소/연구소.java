@@ -3,14 +3,17 @@ import java.util.*;
 
 public class Main {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static ArrayList<Node> newWall = new ArrayList<>();
+    static ArrayList<Node> virus = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
         int n = read();
         int m = read();
 
-        ArrayList<Node> newWall = new ArrayList<>();
-        ArrayList<Node> virus = new ArrayList<>();
-
+        /**
+         * newWall -> 벽을 세로 세울 수 있는 빈 공간
+         * virus -> 바이러스 위치 파악
+         */
         int[][] matrix = new int[n][m];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
@@ -25,36 +28,14 @@ public class Main {
         }
 
         int max = 0;
-
+        
+        //부르트포스로 모든 벽을 세우고 바이러스 확산 시뮬레이션
         for (int i = 0; i < newWall.size(); i++) {
             for (int j = i + 1; j < newWall.size(); j++) {
                 for (int k = j + 1; k < newWall.size(); k++) {
-                    int[][] newMatrix = matrixClone(matrix);
-                    newMatrix[newWall.get(i).x][newWall.get(i).y] = 1;
-                    newMatrix[newWall.get(j).x][newWall.get(j).y] = 1;
-                    newMatrix[newWall.get(k).x][newWall.get(k).y] = 1;
-
-                    Queue<Node> q = new LinkedList<>(virus);
-                    int[][] deltas = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-                    int count = 0;
-
-                    while (!q.isEmpty()) {
-                        Node node = q.poll();
-
-                        for (int[] d : deltas) {
-                            int x = node.x + d[0];
-                            int y = node.y + d[1];
-
-                            if (x < 0 || x >= n || y < 0 || y >= m) continue;
-                            if (newMatrix[x][y] != 0) continue;
-                            newMatrix[x][y] = 2;
-                            count++;
-
-                            q.add(new Node(x, y));
-                        }
-                    }
-                    
-                    max = Math.max(max, newWall.size() - 3 - count);
+                    int[][] newMatrix = matrixClone(matrix, i, j, k);
+                    //(기존 빈구역의 갯수) - (새롭게 설치된 벽) - (확산된 바이러스의 수) 
+                    max = Math.max(max, newWall.size() - 3 - BFS(newMatrix));
                 }
             }
         }
@@ -62,13 +43,45 @@ public class Main {
         System.out.println(max);
     }
 
-    public static int[][] matrixClone(int[][] matrix) {
+    //기존 matrix를 계속 재활용하기 위한 깊은 복사 생성
+    public static int[][] matrixClone(int[][] matrix, int i, int j, int k) {
         int[][] newMatrix = new int[matrix.length][matrix[0].length];
-        for (int i = 0; i < matrix.length; i++) {
-            newMatrix[i] = matrix[i].clone();
+        for (int row = 0; row < matrix.length; row++) {
+            newMatrix[row] = matrix[row].clone();
         }
+
+        newMatrix[newWall.get(i).x][newWall.get(i).y] = 1;
+        newMatrix[newWall.get(j).x][newWall.get(j).y] = 1;
+        newMatrix[newWall.get(k).x][newWall.get(k).y] = 1;
+        
         return newMatrix;
     }
+    
+    //추가되는 바이러스의 수를 Return함
+    public static int BFS(int[][] matrix) {
+        int count = 0;
+        int[][] deltas = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+        Queue<Node> q = new LinkedList<>(virus);
+        
+        while (!q.isEmpty()) {
+            Node node = q.poll();
+
+            for (int[] d : deltas) {
+                int x = node.x + d[0];
+                int y = node.y + d[1];
+
+                if (x < 0 || x >= matrix.length || y < 0 || y >= matrix[0].length) continue;
+                if (matrix[x][y] != 0) continue;
+                matrix[x][y] = 2;
+                count++;
+
+                q.add(new Node(x, y));
+            }
+        }
+        
+        return count;
+    } 
 
     public static class Node{
         int x,y;
