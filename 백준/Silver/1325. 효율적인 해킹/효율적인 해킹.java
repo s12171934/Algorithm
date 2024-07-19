@@ -5,7 +5,9 @@ public class Main {
 	
 	public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	public static ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
-	public static int[] hackLen;
+	public static Node[] hackLen;
+	public static boolean[] childs;
+	public static boolean[] cycleVisited;
 	public static int N, M;
 	public static int max = 0;
 	
@@ -13,7 +15,9 @@ public class Main {
 		N = read();
 		M = read();
 		
-		hackLen = new int[N + 1];
+		hackLen = new Node[N + 1];
+		for (int i = 0; i <= N; i++) hackLen[i] = new Node(0);
+		childs = new boolean[N + 1];
 		
 		for (int i = 0; i <= N; i++) graph.add(new ArrayList<>());
 		for (int i = 0; i < M; i++) {
@@ -23,6 +27,9 @@ public class Main {
 		}
 		
 		for (int i = 1; i <= N; i++) {
+			if (childs[i]) continue;
+			boolean checkCycle = false;
+			
 			boolean[] visited = new boolean[N + 1];
 			visited[i] = true;
 			
@@ -33,23 +40,59 @@ public class Main {
 				int n = q.poll();
 				
 				for (int child : graph.get(n)) {
+					if (child == i) checkCycle = true;
 					if (visited[child]) continue;
 					visited[child] = true;
-					hackLen[i]++;
+					childs[child] = true;
+					hackLen[i].x++;
 					q.add(child);
 				}
 			}
 			
-			max = Math.max(max, hackLen[i]);
+			if(checkCycle) {
+				cycleVisited = new boolean[N + 1];
+				checkCycle(i,i);
+			}
+			
+			max = Math.max(max, hackLen[i].x);
 		}
 		
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i <= N; i++) {
-			if(hackLen[i] == max) {
+			if(hackLen[i].x == max) {
 				sb.append(i).append(" ");
 			}
 		}
 		System.out.println(sb);
+	}
+	
+	public static class Node{
+		int x;
+		
+		public Node(int x) {
+			this.x = x;
+		}
+	}
+	
+	public static boolean checkCycle(int start, int now) {
+		boolean check = false;
+		cycleVisited[now] = true;
+		
+		for (int next : graph.get(now)) {
+			if (cycleVisited[next]) {
+				hackLen[now] = hackLen[next];
+				check = true;
+			}
+			else {
+				check = checkCycle(start, next) | check;
+			}
+		}
+		
+		if(check) {
+			hackLen[now] = hackLen[start];
+		}
+		
+		return check;
 	}
 	
 	public static int read() throws IOException {
