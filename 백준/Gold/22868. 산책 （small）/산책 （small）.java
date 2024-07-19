@@ -25,7 +25,9 @@ public class Main {
 
         Queue<ArrayList<Integer>> q = new LinkedList<>();
         boolean[] visited = new boolean[N + 1];
-        q.add(new ArrayList<>(List.of(s)));
+        ArrayList<Integer> init = new ArrayList<>();
+        init.add(s);
+        q.add(init);
         visited[s] = true;
         int count = 0;
 
