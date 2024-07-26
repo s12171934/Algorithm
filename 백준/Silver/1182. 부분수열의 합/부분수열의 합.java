@@ -20,33 +20,22 @@ public class Main {
 	}
 	
 	public static int DFS() {
-		int count = 0;
+		int count = S == 0 ? -1 : 0;
 		
-		Stack<Node> stack = new Stack<>();
-		stack.add(new Node(0, 1, false));
-		stack.add(new Node(list[0], 1, true));
+		Stack<int[]> stack = new Stack<>();
+		stack.add(new int[] {0,1});
+		stack.add(new int[] {list[0],1});
 		
 		while (!stack.isEmpty()) {
-			Node cur = stack.pop();
-			if(cur.num == S && cur.add) {
-				count++;
+			int[] cur = stack.pop();
+			if(cur[1] == N) {
+				if(cur[0] == S) count++;
+				continue;
 			}
-			if(cur.idx == N) continue;
-			for(int add : new int[] {0,1}) stack.add(new Node(cur.num + add * (list[cur.idx]), cur.idx + 1, add == 1));			
+			for(int add : new int[] {0,1}) stack.add(new int[] {cur[0] + add * list[cur[1]], cur[1] + 1});			
 		}
 		
 		return count;
-	}
-	
-	public static class Node{
-		int num, idx;
-		boolean add;
-		
-		public Node(int num, int idx, boolean add) {
-			this.num = num;
-			this.idx = idx;
-			this.add = add;
-		}
 	}
 	
 	public static int read() throws IOException {
