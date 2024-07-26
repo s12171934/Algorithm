@@ -13,7 +13,6 @@ public class Main {
 		S = read();
 		list = new int[N];
 		for (int i = 0; i < N; i++) list[i] = read();
-		Arrays.sort(list);
 		
 		System.out.println(DFS());
 		
