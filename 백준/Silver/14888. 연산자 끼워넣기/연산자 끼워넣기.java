@@ -24,34 +24,30 @@ public class Main {
 	}
 	
 	static void DFS(int sum, int n, int plus, int minus, int multiple, int mod) {
+		if(n == N) {
+			max = Math.max(max, sum);
+			min = Math.min(min, sum);
+			return;
+		}
+		
 		for (int i = 0; i < 4; i++) {
-			int newSum = sum;
 			switch(i) {
 				case 0:
 					if (plus == 0) break;
-					newSum += arr[n];
-					DFS(newSum, n + 1, plus - 1, minus, multiple, mod);
+					DFS(sum + arr[n], n + 1, plus - 1, minus, multiple, mod);
 					break;
 				case 1:
 					if (minus == 0) break;
-					newSum -= arr[n];
-					DFS(newSum, n + 1, plus, minus - 1, multiple, mod);
+					DFS(sum - arr[n], n + 1, plus, minus - 1, multiple, mod);
 					break;
 				case 2:
 					if (multiple == 0) break;
-					newSum *= arr[n];
-					DFS(newSum, n + 1, plus, minus, multiple - 1, mod);
+					DFS(sum * arr[n], n + 1, plus, minus, multiple - 1, mod);
 					break;
 				case 3:
 					if (mod == 0) break;
-					newSum /= arr[n];
-					DFS(newSum, n + 1, plus, minus, multiple, mod - 1);
+					DFS(sum / arr[n], n + 1, plus, minus, multiple, mod - 1);
 					break;
-			}
-			
-			if(n == N) {
-				max = Math.max(max, newSum);
-				min = Math.min(min, newSum);
 			}
 		}
 	}
