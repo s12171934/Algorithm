@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.*;
 
+import org.w3c.dom.Node;
+
 public class Main {
   static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -11,9 +13,6 @@ public class Main {
     //색종이 한도를 저장
     int[] papers = new int[5];
     Arrays.fill(papers, 5);
-
-    //최대로 색종이를 사용하는 경우가 25 (사실 아님)
-    int min = 26;
 
     for (int i = 0; i < 100; i++) {
       list[i] = read();
@@ -35,7 +34,7 @@ public class Main {
         break;
       }
 
-      //배열 마지막에 도달은 1인 구간을 전부 0으로 변경했다는 의미이므로 최솟값 갱신
+      //배열 마지막에 도달은 1인 구간을 전부 0으로 변경했다는 의미이므로 결과 도출
       if (cur.x == 100) {
         int sum = 25;
         for (int paper : cur.papers) {
@@ -45,33 +44,29 @@ public class Main {
         return;
       }
 
-      for (int k = 0; k < 5; k++) {
-        if (cur.papers[k] == 0)
-          continue;
+      int max = 0;
+      label: for (max = 0; max < 5; max++) {
+    	if ((cur.x % 10) + max >= 10) break;
+        for (int i = 0; i <= max; i++) {
+          int idx = cur.x + (10 * max) + i;
+          if (idx >= 100 || cur.list[idx] == 0) break label;
+
+          idx = cur.x + (10 * i) + max;
+          if (idx >= 100 || cur.list[idx] == 0) break label;
+        }
+      } 
+
+      for (int k = 0; k < max; k++) {
+        if (cur.papers[k] == 0) continue;
         int[] newPapers = cur.papers.clone();
         int[] newList = cur.list.clone();
-
-        boolean check = true;
-        label: for (int i = 0; i <= k; i++) {
+        newPapers[k]--;
+        for (int i = 0; i <= k; i++) {
           for (int j = 0; j <= k; j++) {
-            boolean isTen = (cur.x % 10) + j >= 10;
-            int idx = cur.x + (10 * i) + j;
-            if (idx >= 100 || newList[idx] == 0 || isTen) {
-              check = false;
-              break label;
-            }
+            newList[cur.x + (10 * i) + j] = 0;
           }
         }
-
-        if (check) {
-          newPapers[k]--;
-          for (int i = 0; i <= k; i++) {
-            for (int j = 0; j <= k; j++) {
-              newList[cur.x + (10 * i) + j] = 0;
-            }
-          }
-          q.add(new Node(cur.x, newList, newPapers));
-        }
+        q.add(new Node(cur.x, newList, newPapers));
       }
     }
 
