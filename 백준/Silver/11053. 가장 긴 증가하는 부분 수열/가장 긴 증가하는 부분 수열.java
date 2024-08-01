@@ -12,17 +12,17 @@ class Main{
 			int cur = read();
 			if(dp[pointer - 1] < cur) {
 				dp[pointer++] = cur;
+				continue;
 			}
-			else {
-				int temp = pointer - 1;
-				while (true) {
-					if(dp[temp -1] < cur) {
-						dp[temp] = cur;
-						break;
-					}
-					else {
-						temp--;
-					}
+			
+			int temp = pointer - 1;
+			while (true) {
+				if(dp[temp -1] < cur) {
+					dp[temp] = cur;
+					break;
+				}
+				else {
+					temp--;
 				}
 			}
 		}
