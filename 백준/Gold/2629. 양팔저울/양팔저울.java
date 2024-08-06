@@ -18,23 +18,21 @@ public class Main {
 			max = Math.max(max, res[i]);
 		}
 		
-		Set<Integer>[] dp = new HashSet[N + 1];
-		for (int i = 0; i <= N; i++) {
-			dp[i] = new HashSet<>();
-		}
-		dp[0].add(0);
+		Set<Integer> dp = new HashSet<>();
+		dp.add(0);
 		
 		for(int i = 0; i < N; i++) {
-			for (int j : dp[i]) {
-				for (int k : new int[] {-1, 0, 1}) {
-					dp[i + 1].add(j + k * list[i]);
+			Integer[] temp = new Integer[dp.size()];	
+			for (int j : dp.toArray(temp)) {
+				for (int k : new int[] {-1, 1}) {
+					dp.add(j + k * list[i]);
 				}
 			}
 		}
 		
 		StringBuilder sb = new StringBuilder();
 		for (int i : res) {
-			sb.append(dp[N].contains(i) ? 'Y' : 'N').append(' '); 
+			sb.append(dp.contains(i) ? 'Y' : 'N').append(' '); 
 		}
 		System.out.println(sb.toString());
 	}
