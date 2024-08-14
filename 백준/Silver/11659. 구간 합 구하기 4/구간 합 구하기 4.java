@@ -1,43 +1,25 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
+import java.io.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder stringBuilder = new StringBuilder();
-        StringTokenizer stringTokenizer;
-        String[] str = bufferedReader.readLine().split(" ");
-        int n = Integer.parseInt(str[0]);
-        int m = Integer.parseInt(str[1]);
-
-        stringTokenizer = new StringTokenizer(bufferedReader.readLine());
-        int[] arr = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = Integer.parseInt(stringTokenizer.nextToken());
-            if (i != 0) {
-                arr[i] += arr[i -1];
-            }
-        }
-
-
-        for (int i = 0; i < m; i++) {
-            stringTokenizer = new StringTokenizer(bufferedReader.readLine());
-            int start = Integer.parseInt(stringTokenizer.nextToken());
-            int end = Integer.parseInt(stringTokenizer.nextToken());
-
-            int sum = arr[end - 1];
-
-            if (start != 1) {
-                sum -= arr[start - 2];
-            }
-
-            stringBuilder.append(sum).append("\n");
-        }
-
-        System.out.println(stringBuilder);
-
-        bufferedReader.close();
-    }
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static StringBuilder sb = new StringBuilder();
+	
+	public static void main(String[] args) throws IOException {
+		int N = read();
+		int M = read();
+		int[] list = new int[N + 1];
+		for (int i = 1; i <= N; i++) list[i] = list[i - 1] + read();
+		for (int i = 1; i <= M; i++) sb.append(-1 * list[read() - 1] + list[read()]).append("\n");
+		System.out.println(sb.toString());
+	}
+	
+	static int read() throws IOException {
+		int res = 0;
+		while (true) {
+			int r = br.read();
+			if (r == 10 || r == 32) return res;
+			if (r == 13) continue;
+			res = 10 * res + (r - 48);
+		}
+	}
 }
