@@ -1,29 +1,38 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Main {
-    static StringBuilder stringBuilder = new StringBuilder();
-    public static void main(String[] args) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        String[] str = bufferedReader.readLine().split(" ");
-        int N = Integer.parseInt(str[0]);
-        int M = Integer.parseInt(str[1]);
-        sequence("", M, 1, N - M + 1);
-        System.out.println(stringBuilder);
-        bufferedReader.close();
-    }
-
-    static void sequence(String prev, int M, int start, int end) {
-        String temp;
-        for (int i = start; i <= end; i++) {
-            temp = prev + i + " ";
-            if (M == 1) {
-                stringBuilder.append(temp).append("\n");
-            }
-            else {
-                sequence(temp,M - 1, i + 1, end + 1);
-            }
-        }
-    }
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static StringBuilder res = new StringBuilder();
+	static int N, M;
+	
+	public static void main(String[] args) throws IOException {
+		N = read();
+		M = read();
+		DFS(0,0,0);
+		System.out.println(res.toString());
+	}
+	
+	static void DFS(int pointer, int depth, int visit) {
+		if(depth == M) {
+			for (int i = 1; i <= 8; i++) {
+				if((visit & (1 << i)) == 0) continue;
+				res.append(i).append(" ");
+			}
+			res.append("\n");
+			return;
+		}
+		for (int i = pointer + 1; i <= N; i++) {
+			DFS(i, depth + 1, visit | 1 << i);
+		}
+	}
+	
+	static int read() throws IOException {
+		int res = 0;
+		while (true) {
+			int r = br.read();
+			if (r == 10 || r == 32) return res;
+			if (r == 13) continue;
+			res = 10 * res + (r - 48);
+		}
+	}
 }
