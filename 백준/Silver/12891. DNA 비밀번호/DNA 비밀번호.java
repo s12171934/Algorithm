@@ -7,15 +7,15 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		int S = read();
 		int P = read();
-		String dna = br.readLine();
+		char[] dna = br.readLine().toCharArray();
 		int[] list = {-1 * read(), -1 * read(), -1 * read(), -1 * read()};
 		for(int i = 0; i < P; i++) {
-			list[findIdx(dna.charAt(i))]++;
+			list[findIdx(dna[i])]++;
 		}
 		check(list);
 		for(int i = P; i < S; i++) {
-			list[findIdx(dna.charAt(i - P))]--;
-			list[findIdx(dna.charAt(i))]++;
+			list[findIdx(dna[i - P])]--;
+			list[findIdx(dna[i])]++;
 			check(list);
 		}
 		System.out.println(cnt);
