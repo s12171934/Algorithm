@@ -10,15 +10,7 @@ public class Main {
 			System.out.println(1);
 			return;
 		}
-		boolean[] prime = new boolean[(int)Math.sqrt(N) + 1];
-		prime[0] = true;
-		prime[1] = true;
-		for (int i = 2; i < prime.length; i++) {
-			if(prime[i]) continue;
-			int cnt = 1;
-			while(i * cnt < prime.length) {
-				prime[i * cnt++] = true;
-			}
+		for (int i = 2; i < (int)Math.sqrt(N) + 1; i++) {
 			long exp = 0;
 			while (N % i == 0) {
 				N /= i;
