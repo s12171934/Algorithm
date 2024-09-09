@@ -23,16 +23,28 @@ func readInt(idx int) (res int) {
 func main() {
 	defer writer.Flush()
 
+	var sum, maxLen int
 	N := readInt(0)
-	list := make([]int, N + 1)
-	for i := 1; i <= N; i++ { list[i] = list[i - 1] + readInt(0) }
-	var maxLen int
-	for i := 0; i <= N; i++ {
-		for j := i + 1; j <= N; j++ {
-			inner := list[j] - list[i]
-			maxLen = max(maxLen, min(inner, list[N] - inner))
-			if inner * 2 > list[N] { continue }
-		}
+	list := make([]int, 2 * N)
+	for i := 0; i < N; i++ {
+		list[i] =  readInt(0)
+		list[i + N] = list[i]
+		sum += list[i]
 	}
+	s,m,len1,len2 := 0,0,0,sum
+	for s <= m && m <= s + N && s < N {
+		if len1 == len2 { break }
+		if len1 < len2 {
+			len1 += list[m]
+			len2 -= list[m]
+			m++
+		} else {
+			len1 -= list[s]
+			len2 += list[s]
+			s++
+		}
+		maxLen = max(maxLen, min(len1, len2))
+	}
+
 	writer.WriteString(strconv.Itoa(maxLen))
 }
