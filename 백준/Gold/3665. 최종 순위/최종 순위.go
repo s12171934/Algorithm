@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"container/list"
 	"os"
 	"strconv"
 	"strings"
@@ -25,7 +24,6 @@ func solve() {
     N := readInt(0)
     graph := make([][]bool, N + 1)
     topology := make([]int, N + 1)
-    visited := make([]bool, N + 1)
     for i := 1; i <= N; i++ { graph[i] = make([]bool, N + 1) }
     for i := 1; i <= N; i++ {
         rank := readInt(i - 1)
@@ -49,34 +47,14 @@ func solve() {
         }
         graph[a][b],graph[b][a] = graph[b][a],graph[a][b]
     }
-    
-    q := list.New()
-    for idx,val := range topology {
-        if idx !=0 && val == 0 {
-            q.PushBack(idx)
-            visited[idx] = true
-        } 
-    }
 
-    var ans string
-    for q.Len() > 0 {
-        cur := q.Remove(q.Front()).(int)
-        ans += strconv.Itoa(cur) + " "
-        for idx,E := range graph[cur] {
-            if !E { continue }
-            if topology[idx] == 0 { goto fail }
-            topology[idx]--
-            if topology[idx] == 0 {
-                q.PushBack(idx)
-                visited[idx] = true
-            }
-        }
-    }
+    changed := make([]string, N)
+		for idx,rank := range topology { changed[rank] = strconv.Itoa(idx) }
 
-    for idx,visit := range visited {
-        if idx != 0 && !visit { goto fail }
+    for _,visit := range changed {
+        if visit == "" { goto fail }
     }
-    writer.WriteString(ans + "\n")
+    writer.WriteString(strings.Join(changed, " ") + "\n")
     return
     
     fail:
