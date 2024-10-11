@@ -1,38 +1,44 @@
 import java.io.*;
-import java.util.*;
 
 public class Main {
-	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	static int p;
-	
-	public static void main(String[] args) throws IOException {
-		char[] T = br.readLine().toCharArray();
-		char[] P = br.readLine().toCharArray();
-		ArrayList<Integer> res = new ArrayList<>();
-		int[] pi = new int[P.length];
-		int idx = 0;
-		for (int j = 1; j < P.length; j++) {
-			while(idx > 0 && P[idx] != P[j]) idx = pi[idx - 1];
-			if(P[idx] == P[j]) pi[j] = ++idx;
+  static int count;
+  static StringBuilder res = new StringBuilder();
 
-		}
-		
-		idx = 0;
-		for(int t = 0; t <= T.length - P.length + idx; t++) {
-			int startIdx = t - idx;
-			while(startIdx <= T.length - P.length && T[startIdx] != P[0]) startIdx++;
-			if(startIdx > T.length - P.length) break;
-			for (p = idx ; p < P.length; p++) {
-				if(T[startIdx + p] != P[p]) break;
-			}
-			t = startIdx + p - 1;
-			if (p == P.length) res.add(startIdx + 1);
-			idx = pi[p - 1];
-		}
-		
-		StringBuilder sb = new StringBuilder();
-		sb.append(res.size()).append("\n");
-		for (int r : res) sb.append(r).append(" ");
-		System.out.println(sb.toString());
- 	}
+  public static void main(String[] args) throws Exception {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    char[] T = br.readLine().toCharArray(), P = br.readLine().toCharArray();
+    int[] pi = makePiTable(P);
+    KMP(T,P,pi);
+    System.out.println(count);
+    System.out.println(res.toString().trim());
+  }
+
+  static int[] makePiTable(char[] P) {
+    int pi[] = new int[P.length], prefix = 0;
+    for (int i = 1; i < P.length; i++) {
+      while (prefix > 0 && P[i] != P[prefix]) prefix = pi[prefix - 1];
+      if (P[i] == P[prefix]) pi[i] = ++prefix;
+    }
+    return pi;
+  }
+
+  static void KMP(char[] T,char[] P,int[] pi){
+    int start = 0, check = 0;
+    while (start <= T.length - P.length) {
+      if (T[start] != P[0]) {
+        start++;
+        continue;
+      }
+      int p = check;
+      for (; p < P.length; p++) {
+        if (T[start + p] != P[p]) break;
+      }
+      if (p == P.length) {
+        count++;
+        res.append(start + 1).append(" ");
+      }
+      check = pi[p - 1];
+      start += p - check;
+    }
+  }
 }
